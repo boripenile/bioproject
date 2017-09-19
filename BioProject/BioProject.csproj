@@ -111,6 +111,7 @@
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net45\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -204,16 +205,69 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="BiometricModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BiometricModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BiometricModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BiometricModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BiometricModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BiometricModel.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\UniversityController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="department.cs">
+      <DependentUpon>BiometricModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Dtos\ActivationDTO.cs" />
+    <Compile Include="Dtos\LoginDTO.cs" />
+    <Compile Include="Dtos\UniversityDTO.cs" />
+    <Compile Include="faculty.cs">
+      <DependentUpon>BiometricModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fingerprint.cs">
+      <DependentUpon>BiometricModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fingertemplate.cs">
+      <DependentUpon>BiometricModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\Utils.cs" />
+    <Compile Include="Models\UniversityHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Response\ActivationResponseDTO.cs" />
+    <Compile Include="Response\RegisterResponseDTO.cs" />
+    <Compile Include="student.cs">
+      <DependentUpon>BiometricModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="university.cs">
+      <DependentUpon>BiometricModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="user.cs">
+      <DependentUpon>BiometricModel.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
+    <Content Include="BiometricModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>BiometricModel.edmx</DependentUpon>
+      <LastGenOutput>BiometricModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="BiometricModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>BiometricModel.edmx</DependentUpon>
+      <LastGenOutput>BiometricModel.cs</LastGenOutput>
+    </Content>
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -252,6 +306,13 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="OpenTK.dll.config" />
+    <EntityDeploy Include="BiometricModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>BiometricModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="BiometricModel.edmx.diagram">
+      <DependentUpon>BiometricModel.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -281,7 +342,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -293,6 +353,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\jquery-3.1.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

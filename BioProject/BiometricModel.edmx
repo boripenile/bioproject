@@ -1,0 +1,481 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="BiometricModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="department">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="departmentName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="facultyId" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="faculty">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="universityId" Type="bigint" Nullable="false" />
+          <Property Name="facaultyName" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="fingerprint">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="studentId" Type="bigint" Nullable="false" />
+          <Property Name="leftThumb" Type="longblob" Nullable="false" />
+          <Property Name="leftIndex" Type="longblob" Nullable="false" />
+          <Property Name="rightThumb" Type="longblob" Nullable="false" />
+          <Property Name="rightIndex" Type="longblob" Nullable="false" />
+        </EntityType>
+        <EntityType Name="fingertemplate">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="studentId" Type="bigint" Nullable="false" />
+          <Property Name="template" Type="longblob" Nullable="false" />
+          <Property Name="quality" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="student">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="matricNumber" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="surname" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="firstName" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="otherName" Type="varchar" MaxLength="45" />
+          <Property Name="email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="departmentId" Type="bigint" Nullable="false" />
+          <Property Name="status" Type="int" />
+          <Property Name="insertedDate" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="insertedBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="updatedDate" Type="datetime" Precision="0" />
+          <Property Name="updatedBy" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="university">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="universityCode" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="mobile" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="password" Type="varchar" MaxLength="255" />
+          <Property Name="insertedDate" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="insertedBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="updatedDate" Type="datetime" Precision="0" />
+          <Property Name="updatedBy" Type="varchar" MaxLength="50" />
+          <Property Name="universityName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="universityAddress" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="activate" Type="bool" Nullable="false" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="password" Type="varchar" MaxLength="255" />
+          <Property Name="isAdmin" Type="bool" />
+        </EntityType>
+        <Association Name="department_faculty_FK">
+          <End Role="faculty" Type="Self.faculty" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="department" Type="Self.department" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="faculty">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="department">
+              <PropertyRef Name="facultyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="faculty_university_FK">
+          <End Role="university" Type="Self.university" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="faculty" Type="Self.faculty" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="university">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="faculty">
+              <PropertyRef Name="universityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="finger_student">
+          <End Role="student" Type="Self.student" Multiplicity="1" />
+          <End Role="fingerprint" Type="Self.fingerprint" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="fingerprint">
+              <PropertyRef Name="studentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="student_department_FK">
+          <End Role="department" Type="Self.department" Multiplicity="1" />
+          <End Role="student" Type="Self.student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="department">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="student">
+              <PropertyRef Name="departmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="student_template_FK">
+          <End Role="student" Type="Self.student" Multiplicity="1" />
+          <End Role="fingertemplate" Type="Self.fingertemplate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="fingertemplate">
+              <PropertyRef Name="studentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BiometricModelStoreContainer">
+          <EntitySet Name="department" EntityType="Self.department" Schema="biometric" store:Type="Tables" />
+          <EntitySet Name="faculty" EntityType="Self.faculty" Schema="biometric" store:Type="Tables" />
+          <EntitySet Name="fingerprint" EntityType="Self.fingerprint" Schema="biometric" store:Type="Tables" />
+          <EntitySet Name="fingertemplate" EntityType="Self.fingertemplate" Schema="biometric" store:Type="Tables" />
+          <EntitySet Name="student" EntityType="Self.student" Schema="biometric" store:Type="Tables" />
+          <EntitySet Name="university" EntityType="Self.university" Schema="biometric" store:Type="Tables" />
+          <EntitySet Name="users" EntityType="Self.users" Schema="biometric" store:Type="Tables" />
+          <AssociationSet Name="department_faculty_FK" Association="Self.department_faculty_FK">
+            <End Role="faculty" EntitySet="faculty" />
+            <End Role="department" EntitySet="department" />
+          </AssociationSet>
+          <AssociationSet Name="faculty_university_FK" Association="Self.faculty_university_FK">
+            <End Role="university" EntitySet="university" />
+            <End Role="faculty" EntitySet="faculty" />
+          </AssociationSet>
+          <AssociationSet Name="finger_student" Association="Self.finger_student">
+            <End Role="student" EntitySet="student" />
+            <End Role="fingerprint" EntitySet="fingerprint" />
+          </AssociationSet>
+          <AssociationSet Name="student_department_FK" Association="Self.student_department_FK">
+            <End Role="department" EntitySet="department" />
+            <End Role="student" EntitySet="student" />
+          </AssociationSet>
+          <AssociationSet Name="student_template_FK" Association="Self.student_template_FK">
+            <End Role="student" EntitySet="student" />
+            <End Role="fingertemplate" EntitySet="fingertemplate" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BiometricModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="department">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="departmentName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="facultyId" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="faculty" Relationship="Self.department_faculty_FK" FromRole="department" ToRole="faculty" />
+          <NavigationProperty Name="students" Relationship="Self.student_department_FK" FromRole="department" ToRole="student" />
+        </EntityType>
+        <EntityType Name="faculty">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="universityId" Type="Int64" Nullable="false" />
+          <Property Name="facaultyName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="departments" Relationship="Self.department_faculty_FK" FromRole="faculty" ToRole="department" />
+          <NavigationProperty Name="university" Relationship="Self.faculty_university_FK" FromRole="faculty" ToRole="university" />
+        </EntityType>
+        <EntityType Name="fingerprint">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="studentId" Type="Int64" Nullable="false" />
+          <Property Name="leftThumb" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="leftIndex" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="rightThumb" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="rightIndex" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <NavigationProperty Name="student" Relationship="Self.finger_student" FromRole="fingerprint" ToRole="student" />
+        </EntityType>
+        <EntityType Name="fingertemplate">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="studentId" Type="Int64" Nullable="false" />
+          <Property Name="template" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="quality" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="student" Relationship="Self.student_template_FK" FromRole="fingertemplate" ToRole="student" />
+        </EntityType>
+        <EntityType Name="student">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="matricNumber" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="surname" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="firstName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="otherName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="departmentId" Type="Int64" Nullable="false" />
+          <Property Name="status" Type="Int32" />
+          <Property Name="insertedDate" Type="DateTime" Nullable="false" />
+          <Property Name="insertedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="updatedDate" Type="DateTime" />
+          <Property Name="updatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="department" Relationship="Self.student_department_FK" FromRole="student" ToRole="department" />
+          <NavigationProperty Name="fingerprints" Relationship="Self.finger_student" FromRole="student" ToRole="fingerprint" />
+          <NavigationProperty Name="fingertemplates" Relationship="Self.student_template_FK" FromRole="student" ToRole="fingertemplate" />
+        </EntityType>
+        <EntityType Name="university">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="universityCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="mobile" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="insertedDate" Type="DateTime" Nullable="false" />
+          <Property Name="insertedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="updatedDate" Type="DateTime" />
+          <Property Name="updatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="faculties" Relationship="Self.faculty_university_FK" FromRole="university" ToRole="faculty" />
+          <Property Name="universityName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="universityAddress" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="activate" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="isAdmin" Type="Boolean" />
+        </EntityType>
+        <Association Name="department_faculty_FK">
+          <End Role="faculty" Type="Self.faculty" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="department" Type="Self.department" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="faculty">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="department">
+              <PropertyRef Name="facultyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="student_department_FK">
+          <End Role="department" Type="Self.department" Multiplicity="1" />
+          <End Role="student" Type="Self.student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="department">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="student">
+              <PropertyRef Name="departmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="faculty_university_FK">
+          <End Role="university" Type="Self.university" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="faculty" Type="Self.faculty" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="university">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="faculty">
+              <PropertyRef Name="universityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="finger_student">
+          <End Role="student" Type="Self.student" Multiplicity="1" />
+          <End Role="fingerprint" Type="Self.fingerprint" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="fingerprint">
+              <PropertyRef Name="studentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="student_template_FK">
+          <End Role="student" Type="Self.student" Multiplicity="1" />
+          <End Role="fingertemplate" Type="Self.fingertemplate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="fingertemplate">
+              <PropertyRef Name="studentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BiometricContextDb" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="departments" EntityType="Self.department" />
+          <EntitySet Name="faculties" EntityType="Self.faculty" />
+          <EntitySet Name="fingerprints" EntityType="Self.fingerprint" />
+          <EntitySet Name="fingertemplates" EntityType="Self.fingertemplate" />
+          <EntitySet Name="students" EntityType="Self.student" />
+          <EntitySet Name="universities" EntityType="Self.university" />
+          <EntitySet Name="users" EntityType="Self.user" />
+          <AssociationSet Name="department_faculty_FK" Association="Self.department_faculty_FK">
+            <End Role="faculty" EntitySet="faculties" />
+            <End Role="department" EntitySet="departments" />
+          </AssociationSet>
+          <AssociationSet Name="student_department_FK" Association="Self.student_department_FK">
+            <End Role="department" EntitySet="departments" />
+            <End Role="student" EntitySet="students" />
+          </AssociationSet>
+          <AssociationSet Name="faculty_university_FK" Association="Self.faculty_university_FK">
+            <End Role="university" EntitySet="universities" />
+            <End Role="faculty" EntitySet="faculties" />
+          </AssociationSet>
+          <AssociationSet Name="finger_student" Association="Self.finger_student">
+            <End Role="student" EntitySet="students" />
+            <End Role="fingerprint" EntitySet="fingerprints" />
+          </AssociationSet>
+          <AssociationSet Name="student_template_FK" Association="Self.student_template_FK">
+            <End Role="student" EntitySet="students" />
+            <End Role="fingertemplate" EntitySet="fingertemplates" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BiometricModelStoreContainer" CdmEntityContainer="BiometricContextDb">
+          <EntitySetMapping Name="departments">
+            <EntityTypeMapping TypeName="BiometricModel.department">
+              <MappingFragment StoreEntitySet="department">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="departmentName" ColumnName="departmentName" />
+                <ScalarProperty Name="facultyId" ColumnName="facultyId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="faculties">
+            <EntityTypeMapping TypeName="BiometricModel.faculty">
+              <MappingFragment StoreEntitySet="faculty">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="universityId" ColumnName="universityId" />
+                <ScalarProperty Name="facaultyName" ColumnName="facaultyName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="fingerprints">
+            <EntityTypeMapping TypeName="BiometricModel.fingerprint">
+              <MappingFragment StoreEntitySet="fingerprint">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="studentId" ColumnName="studentId" />
+                <ScalarProperty Name="leftThumb" ColumnName="leftThumb" />
+                <ScalarProperty Name="leftIndex" ColumnName="leftIndex" />
+                <ScalarProperty Name="rightThumb" ColumnName="rightThumb" />
+                <ScalarProperty Name="rightIndex" ColumnName="rightIndex" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="fingertemplates">
+            <EntityTypeMapping TypeName="BiometricModel.fingertemplate">
+              <MappingFragment StoreEntitySet="fingertemplate">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="studentId" ColumnName="studentId" />
+                <ScalarProperty Name="template" ColumnName="template" />
+                <ScalarProperty Name="quality" ColumnName="quality" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="students">
+            <EntityTypeMapping TypeName="BiometricModel.student">
+              <MappingFragment StoreEntitySet="student">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="matricNumber" ColumnName="matricNumber" />
+                <ScalarProperty Name="surname" ColumnName="surname" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="otherName" ColumnName="otherName" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="departmentId" ColumnName="departmentId" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="insertedDate" ColumnName="insertedDate" />
+                <ScalarProperty Name="insertedBy" ColumnName="insertedBy" />
+                <ScalarProperty Name="updatedDate" ColumnName="updatedDate" />
+                <ScalarProperty Name="updatedBy" ColumnName="updatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="universities">
+            <EntityTypeMapping TypeName="BiometricModel.university">
+              <MappingFragment StoreEntitySet="university">
+                <ScalarProperty Name="activate" ColumnName="activate" />
+                <ScalarProperty Name="universityAddress" ColumnName="universityAddress" />
+                <ScalarProperty Name="universityName" ColumnName="universityName" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="universityCode" ColumnName="universityCode" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="mobile" ColumnName="mobile" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="insertedDate" ColumnName="insertedDate" />
+                <ScalarProperty Name="insertedBy" ColumnName="insertedBy" />
+                <ScalarProperty Name="updatedDate" ColumnName="updatedDate" />
+                <ScalarProperty Name="updatedBy" ColumnName="updatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="BiometricModel.user">
+              <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="isAdmin" ColumnName="isAdmin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

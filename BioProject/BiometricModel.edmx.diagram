@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ab5f5515f7af4ecf981c7c767808c9b2" Name="Diagram1">
+        <EntityTypeShape EntityType="BiometricModel.department" Width="1.5" PointX="5.25" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BiometricModel.faculty" Width="1.5" PointX="3" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BiometricModel.fingerprint" Width="1.5" PointX="9.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="BiometricModel.fingertemplate" Width="1.5" PointX="9.75" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="BiometricModel.student" Width="1.5" PointX="7.5" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BiometricModel.university" Width="1.5" PointX="0.75" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="BiometricModel.user" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
+        <AssociationConnector Association="BiometricModel.department_faculty_FK" ManuallyRouted="false" />
+        <AssociationConnector Association="BiometricModel.student_department_FK" ManuallyRouted="false" />
+        <AssociationConnector Association="BiometricModel.faculty_university_FK" ManuallyRouted="false" />
+        <AssociationConnector Association="BiometricModel.finger_student" ManuallyRouted="false" />
+        <AssociationConnector Association="BiometricModel.student_template_FK" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
