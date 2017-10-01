@@ -1,6 +1,7 @@
 ﻿using BioProject.Dtos;
 using BioProject.Models;
 using BioProject.Response;
+using GriauleFingerprintLibrary.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,58 @@ namespace BioProject.Controllers
         private BiometricContextDb _context = new BiometricContextDb();
 
         public StudentController() { }
+
+        [HttpPost]
+        [Route("verification")]
+        public IHttpActionResult verifyStudent(VerifyFingerDTO finger)
+        {
+            try
+            {
+                if (String.IsNullOrWhiteSpace(finger.AnyFingerImage)) return BadRequest("Image of index or thumb of either right or left finger is required.");
+
+                Int64 studentId = VerifyFingerPrint(finger.AnyFingerImage);
+
+                if (studentId > 0)
+                {
+                    var student = _context.students.SingleOrDefault(m => m.id == studentId);
+
+                    var picture = _context.pictures.SingleOrDefault(m => m.student.id == studentId);
+
+                    if (student != null && picture != null)
+                    {
+                        var response = new VerifiedStudentResponseDTO()
+                        {
+                            StudentId = student.id,
+                            Department = student.department.departmentName,
+                            Faculty = student.department.faculty.facaultyName,
+                            Email = student.email,
+                            FirstName = student.firstName,
+                            Surname = student.surname,
+                            OtherName = student.otherName != null ? student.otherName : "",
+                            MatricNumber = student.matricNumber,
+                            UniversityName = student.department.faculty.university.universityName,
+                            Status = student.status,
+                            Picture = Convert.ToBase64String(picture.image)
+                        };
+
+                        return Ok(response);
+                    }
+                    else
+                    {
+                        return BadRequest("Student can not be verified");
+                    }
+                   
+                }
+                else
+                {
+                    return BadRequest("Student can not be verified");
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Something went wrong: " + e.Message);
+            }
+        }
 
         [HttpGet]
         [Route("university")]
@@ -225,6 +278,67 @@ namespace BioProject.Controllers
                 return BadRequest("Something went wrong: " + e.Message);
             }
         }
+        private Int64 VerifyFingerPrint(string fingerPrint)
+        {
+            try
+            {
+                var onlineTemplates = _context.fingertemplates.ToList();
+
+                FingerprintTemplate templateToVerify = ConvertFingerToTemplate(fingerPrint);
+
+                foreach (var template in onlineTemplates)
+                {
+                    var dbTemplate = ConvertToTemplateFromDb(template);
+                    int score = 0;
+                    if (Verify(dbTemplate, templateToVerify, out score))
+                    {
+                        return template.student.id;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return 0;
+            }
+
+            return 0;
+        }
+
+        private FingerprintTemplate ConvertToTemplateFromDb(fingertemplate templateDb)
+        {
+            byte[] buff = templateDb.template;
+            int quality = templateDb.quality;
+
+            var _testTemplateT = new GriauleFingerprintLibrary.DataTypes.FingerprintTemplate()
+            {
+                Size = buff.Length,
+                Buffer = buff,
+                Quality = quality
+            };
+
+            return _testTemplateT;
+        }
+
+        private FingerprintTemplate ConvertFingerToTemplate(string finger)
+        {
+            var imageRaw = FingerPrintHelper.Instance.GetRawImageFromByte(finger);
+
+            if (imageRaw != null)
+            {
+                return FingerPrintHelper.Instance.ConvertRawImageToTemplate(imageRaw);
+            }
+            return null;
+        }
+
+        public static bool Verify(GriauleFingerprintLibrary.DataTypes.FingerprintTemplate queryTemplate,
+           GriauleFingerprintLibrary.DataTypes.FingerprintTemplate referenceTemplate, out int verifyScore)
+        {
+            return FingerPrintHelper.Instance.RefFingercore.Verify(queryTemplate, referenceTemplate, out verifyScore) ==
+                   1
+                ? true
+                : false;
+        }
+
         private string GetTemplateFromFingerString(string finger)
         {
             var imageRaw = FingerPrintHelper.Instance.GetRawImageFromByte(finger);

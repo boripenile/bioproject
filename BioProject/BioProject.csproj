@@ -241,6 +241,7 @@
     <Compile Include="Dtos\StudentRegistrationDTO.cs" />
     <Compile Include="Dtos\UniversityAdminDTO.cs" />
     <Compile Include="Dtos\UniversityDTO.cs" />
+    <Compile Include="Dtos\VerifyFingerDTO.cs" />
     <Compile Include="faculty.cs">
       <DependentUpon>BiometricModel.tt</DependentUpon>
     </Compile>
@@ -268,6 +269,7 @@
     <Compile Include="Response\StudentWithPictureDTO.cs" />
     <Compile Include="Response\UniversityAdminLiteResponseDTO.cs" />
     <Compile Include="Response\UniversityAdminResponseDTO.cs" />
+    <Compile Include="Response\VerifiedStudentResponseDTO.cs" />
     <Compile Include="student.cs">
       <DependentUpon>BiometricModel.tt</DependentUpon>
     </Compile>
