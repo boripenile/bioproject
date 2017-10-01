@@ -41,6 +41,14 @@
           <Property Name="template" Type="longblob" Nullable="false" />
           <Property Name="quality" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="picture">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="studentId" Type="bigint" Nullable="false" />
+          <Property Name="image" Type="longblob" Nullable="false" />
+        </EntityType>
         <EntityType Name="student">
           <Key>
             <PropertyRef Name="id" />
@@ -52,7 +60,7 @@
           <Property Name="otherName" Type="varchar" MaxLength="45" />
           <Property Name="email" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="departmentId" Type="bigint" Nullable="false" />
-          <Property Name="status" Type="int" />
+          <Property Name="status" Type="bool" Nullable="false" />
           <Property Name="insertedDate" Type="datetime" Precision="0" Nullable="false" />
           <Property Name="insertedBy" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="updatedDate" Type="datetime" Precision="0" />
@@ -83,6 +91,7 @@
           <Property Name="email" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="password" Type="varchar" MaxLength="255" />
           <Property Name="isAdmin" Type="bool" />
+          <Property Name="universityCode" Type="varchar" MaxLength="45" />
         </EntityType>
         <Association Name="department_faculty_FK">
           <End Role="faculty" Type="Self.faculty" Multiplicity="1">
@@ -136,6 +145,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="student_picture_FK">
+          <End Role="student" Type="Self.student" Multiplicity="1" />
+          <End Role="picture" Type="Self.picture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="picture">
+              <PropertyRef Name="studentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="student_template_FK">
           <End Role="student" Type="Self.student" Multiplicity="1" />
           <End Role="fingertemplate" Type="Self.fingertemplate" Multiplicity="*" />
@@ -153,6 +174,7 @@
           <EntitySet Name="faculty" EntityType="Self.faculty" Schema="biometric" store:Type="Tables" />
           <EntitySet Name="fingerprint" EntityType="Self.fingerprint" Schema="biometric" store:Type="Tables" />
           <EntitySet Name="fingertemplate" EntityType="Self.fingertemplate" Schema="biometric" store:Type="Tables" />
+          <EntitySet Name="picture" EntityType="Self.picture" Schema="biometric" store:Type="Tables" />
           <EntitySet Name="student" EntityType="Self.student" Schema="biometric" store:Type="Tables" />
           <EntitySet Name="university" EntityType="Self.university" Schema="biometric" store:Type="Tables" />
           <EntitySet Name="users" EntityType="Self.users" Schema="biometric" store:Type="Tables" />
@@ -171,6 +193,10 @@
           <AssociationSet Name="student_department_FK" Association="Self.student_department_FK">
             <End Role="department" EntitySet="department" />
             <End Role="student" EntitySet="student" />
+          </AssociationSet>
+          <AssociationSet Name="student_picture_FK" Association="Self.student_picture_FK">
+            <End Role="student" EntitySet="student" />
+            <End Role="picture" EntitySet="picture" />
           </AssociationSet>
           <AssociationSet Name="student_template_FK" Association="Self.student_template_FK">
             <End Role="student" EntitySet="student" />
@@ -234,7 +260,7 @@
           <Property Name="otherName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
           <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="departmentId" Type="Int64" Nullable="false" />
-          <Property Name="status" Type="Int32" />
+          <Property Name="status" Type="Boolean" Nullable="false" />
           <Property Name="insertedDate" Type="DateTime" Nullable="false" />
           <Property Name="insertedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="updatedDate" Type="DateTime" />
@@ -242,6 +268,7 @@
           <NavigationProperty Name="department" Relationship="Self.student_department_FK" FromRole="student" ToRole="department" />
           <NavigationProperty Name="fingerprints" Relationship="Self.finger_student" FromRole="student" ToRole="fingerprint" />
           <NavigationProperty Name="fingertemplates" Relationship="Self.student_template_FK" FromRole="student" ToRole="fingertemplate" />
+          <NavigationProperty Name="pictures" Relationship="BiometricModel.student_picture_FK" FromRole="student" ToRole="picture" />
         </EntityType>
         <EntityType Name="university">
           <Key>
@@ -269,6 +296,7 @@
           <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="isAdmin" Type="Boolean" />
+          <Property Name="universityCode" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="department_faculty_FK">
           <End Role="faculty" Type="Self.faculty" Multiplicity="1">
@@ -362,7 +390,33 @@
             <End Role="student" EntitySet="students" />
             <End Role="fingertemplate" EntitySet="fingertemplates" />
           </AssociationSet>
+          <EntitySet Name="pictures" EntityType="BiometricModel.picture" />
+          <AssociationSet Name="student_picture_FK" Association="BiometricModel.student_picture_FK">
+            <End Role="student" EntitySet="students" />
+            <End Role="picture" EntitySet="pictures" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="picture">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="studentId" Type="Int64" Nullable="false" />
+          <Property Name="image" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="student" Relationship="BiometricModel.student_picture_FK" FromRole="picture" ToRole="student" />
+        </EntityType>
+        <Association Name="student_picture_FK">
+          <End Type="BiometricModel.student" Role="student" Multiplicity="1" />
+          <End Type="BiometricModel.picture" Role="picture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="student">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="picture">
+              <PropertyRef Name="studentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -448,10 +502,20 @@
           <EntitySetMapping Name="users">
             <EntityTypeMapping TypeName="BiometricModel.user">
               <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="universityCode" ColumnName="universityCode" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="isAdmin" ColumnName="isAdmin" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="pictures">
+            <EntityTypeMapping TypeName="BiometricModel.picture">
+              <MappingFragment StoreEntitySet="picture">
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="studentId" ColumnName="studentId" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

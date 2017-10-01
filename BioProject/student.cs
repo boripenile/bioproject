@@ -19,6 +19,7 @@ namespace BioProject
         {
             this.fingerprints = new HashSet<fingerprint>();
             this.fingertemplates = new HashSet<fingertemplate>();
+            this.pictures = new HashSet<picture>();
         }
     
         public long id { get; set; }
@@ -28,7 +29,7 @@ namespace BioProject
         public string otherName { get; set; }
         public string email { get; set; }
         public long departmentId { get; set; }
-        public Nullable<int> status { get; set; }
+        public bool status { get; set; }
         public System.DateTime insertedDate { get; set; }
         public string insertedBy { get; set; }
         public Nullable<System.DateTime> updatedDate { get; set; }
@@ -39,5 +40,7 @@ namespace BioProject
         public virtual ICollection<fingerprint> fingerprints { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<fingertemplate> fingertemplates { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<picture> pictures { get; set; }
     }
 }

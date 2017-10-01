@@ -11,12 +11,14 @@
         <EntityTypeShape EntityType="BiometricModel.fingertemplate" Width="1.5" PointX="9.75" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="BiometricModel.student" Width="1.5" PointX="7.5" PointY="1.625" IsExpanded="true" />
         <EntityTypeShape EntityType="BiometricModel.university" Width="1.5" PointX="0.75" PointY="2.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="BiometricModel.user" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BiometricModel.user" Width="1.5" PointX="2.875" PointY="5.125" IsExpanded="true" />
         <AssociationConnector Association="BiometricModel.department_faculty_FK" ManuallyRouted="false" />
         <AssociationConnector Association="BiometricModel.student_department_FK" ManuallyRouted="false" />
         <AssociationConnector Association="BiometricModel.faculty_university_FK" ManuallyRouted="false" />
         <AssociationConnector Association="BiometricModel.finger_student" ManuallyRouted="false" />
         <AssociationConnector Association="BiometricModel.student_template_FK" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="BiometricModel.picture" Width="1.5" PointX="9.75" PointY="7.75" />
+        <AssociationConnector Association="BiometricModel.student_picture_FK" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

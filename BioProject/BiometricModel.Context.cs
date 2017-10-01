@@ -32,5 +32,6 @@ namespace BioProject
         public virtual DbSet<student> students { get; set; }
         public virtual DbSet<university> universities { get; set; }
         public virtual DbSet<user> users { get; set; }
+        public virtual DbSet<picture> pictures { get; set; }
     }
 }

@@ -12,7 +12,7 @@ using System.Web.Http;
 
 namespace BioProject.Controllers
 {
-    [RoutePrefix("biometric/api")]
+    [RoutePrefix("biometric/api/universities")]
     public class UniversityController : ApiController
     {
         private BiometricContextDb _context = new BiometricContextDb();
@@ -20,24 +20,30 @@ namespace BioProject.Controllers
         public UniversityController() { }
 
         [HttpPost]
-        [Route("university/login")]
-        public async Task<IHttpActionResult> loginUniversity(LoginDTO request)
+        [Route("login")]
+        public IHttpActionResult loginUniversity(LoginDTO request)
         {
             try
             {
                 if (UniversityHelper.isLoginDataValid(request))
                 {
-                    var existUniversity = _context.universities.SingleOrDefault(m => m.email == request.EmailAddress
-                        && m.password == request.Password && m.activate == true);
-                    if (existUniversity == null) return BadRequest("Invalid Email address or password.");
-                    
-                    var response = new ActivationResponseDTO()
+                    var existUser = _context.users.SingleOrDefault(m => m.email == request.EmailAddress
+                        && m.password == request.Password);
+                    if (existUser == null) return BadRequest("Invalid Email address or password.");
+
+                    var existUniversity = _context.universities.SingleOrDefault(m => m.universityCode == existUser.universityCode
+                       && m.activate == true);
+
+                    if (existUniversity == null) return BadRequest("Invalid user credentials for university admin");
+
+                    var response = new UniversityAdminResponseDTO()
                     {
+                        Id = existUser.id,
                         Activated = existUniversity.activate,
                         UniversityAddress = existUniversity.universityAddress,
                         UniversityCode = existUniversity.universityCode,
                         UniversityName = existUniversity.universityName,
-                        EmailAddress = existUniversity.email,
+                        EmailAddress = existUser.email,
                         PhoneNumber = existUniversity.mobile
                     };
 
@@ -56,7 +62,7 @@ namespace BioProject.Controllers
         }
 
         [HttpPost]
-        [Route("university/activate")]
+        [Route("activate")]
         public async  Task<IHttpActionResult> activateUniversity(ActivationDTO request)
         {
             try
@@ -96,7 +102,7 @@ namespace BioProject.Controllers
         }
 
         [HttpPost]
-        [Route("university/register")]
+        [Route("register")]
         public async Task<IHttpActionResult> createUniversity(UniversityDTO request)
         {
             try

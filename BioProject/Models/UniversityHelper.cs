@@ -8,6 +8,67 @@ namespace BioProject.Models
 {
     public class UniversityHelper
     {
+        public static bool isDepartmentDataValid(DepartmentDTO departmentDTO)
+        {
+
+            if (String.IsNullOrWhiteSpace(departmentDTO.DepartmentName))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        public static bool isFacultyDataValid(FacultyDTO facultDTO)
+        {
+
+            if (String.IsNullOrWhiteSpace(facultDTO.UniversityCode) ||
+                String.IsNullOrWhiteSpace(facultDTO.FacultyName))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        public static bool isUniversityAdminrDataValid(UniversityAdminDTO adminDTO)
+        {
+
+            if (String.IsNullOrWhiteSpace(adminDTO.UniversityCode) ||
+                String.IsNullOrWhiteSpace(adminDTO.EmailAddress) ||
+                String.IsNullOrWhiteSpace(adminDTO.Password))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        public static bool isFingerDataValid(FingerPrintDTO fingerDTO)
+        {
+
+            if (String.IsNullOrWhiteSpace(fingerDTO.LeftIndex) ||
+                String.IsNullOrWhiteSpace(fingerDTO.LeftThumb) ||
+                String.IsNullOrWhiteSpace(fingerDTO.RightIndex) ||
+                String.IsNullOrWhiteSpace(fingerDTO.RightThumb))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        public static bool isStudentDataValid(StudentDTO studentDTO)
+        {
+
+            if (String.IsNullOrWhiteSpace(studentDTO.MatricNumber) ||
+                String.IsNullOrWhiteSpace(studentDTO.FirstName) ||
+                String.IsNullOrWhiteSpace(studentDTO.Surname) ||
+                String.IsNullOrWhiteSpace(studentDTO.Email) ||
+                studentDTO.DepartmentId == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public static bool isUniversityDataValid(UniversityDTO university) {
 
             if (String.IsNullOrWhiteSpace(university.EmailAddress) ||

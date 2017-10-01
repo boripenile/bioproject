@@ -12,12 +12,12 @@ namespace BioProject
     using System;
     using System.Collections.Generic;
     
-    public partial class user
+    public partial class picture
     {
         public long id { get; set; }
-        public string email { get; set; }
-        public string password { get; set; }
-        public Nullable<bool> isAdmin { get; set; }
-        public string universityCode { get; set; }
+        public long studentId { get; set; }
+        public byte[] image { get; set; }
+    
+        public virtual student student { get; set; }
     }
 }
