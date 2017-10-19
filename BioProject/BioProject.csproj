@@ -115,11 +115,17 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web.Cors, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http.Cors, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Cors.5.2.3\lib\net45\System.Web.Http.Cors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
@@ -235,10 +241,12 @@
     <Compile Include="Dtos\ActivationDTO.cs" />
     <Compile Include="Dtos\DepartmentDTO.cs" />
     <Compile Include="Dtos\FacultyDTO.cs" />
+    <Compile Include="Dtos\FingerPrint.cs" />
     <Compile Include="Dtos\FingerPrintDTO.cs" />
     <Compile Include="Dtos\LoginDTO.cs" />
     <Compile Include="Dtos\StudentDTO.cs" />
     <Compile Include="Dtos\StudentRegistrationDTO.cs" />
+    <Compile Include="Dtos\TemplateDTO.cs" />
     <Compile Include="Dtos\UniversityAdminDTO.cs" />
     <Compile Include="Dtos\UniversityDTO.cs" />
     <Compile Include="Dtos\VerifyFingerDTO.cs" />
@@ -357,6 +365,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\HelpPage\Views\_ViewStart.cshtml" />
     <Content Include="Content\Site.css" />

@@ -44,10 +44,8 @@ namespace BioProject.Models
         public static bool isFingerDataValid(FingerPrintDTO fingerDTO)
         {
 
-            if (String.IsNullOrWhiteSpace(fingerDTO.LeftIndex) ||
-                String.IsNullOrWhiteSpace(fingerDTO.LeftThumb) ||
-                String.IsNullOrWhiteSpace(fingerDTO.RightIndex) ||
-                String.IsNullOrWhiteSpace(fingerDTO.RightThumb))
+            if (String.IsNullOrWhiteSpace(fingerDTO.LeftThumb.FingerImage) ||
+                String.IsNullOrWhiteSpace(fingerDTO.RightThumb.FingerImage))
             {
                 return false;
             }

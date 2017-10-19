@@ -37,7 +37,8 @@ namespace BioProject.Controllers
                     {
                         email = request.EmailAddress,
                         password = request.Password,
-                        universityCode = request.UniversityCode
+                        universityCode = request.UniversityCode,
+                        isAdmin = false
                     };
                     _context.users.Add(newUser);
 

@@ -17,9 +17,7 @@ namespace BioProject
         public long id { get; set; }
         public long studentId { get; set; }
         public byte[] leftThumb { get; set; }
-        public byte[] leftIndex { get; set; }
         public byte[] rightThumb { get; set; }
-        public byte[] rightIndex { get; set; }
     
         public virtual student student { get; set; }
     }

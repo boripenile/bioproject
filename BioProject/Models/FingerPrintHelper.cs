@@ -1,4 +1,6 @@
-﻿using GriauleFingerprintLibrary;
+﻿using BioProject.Dtos;
+using BioProject.Helper;
+using GriauleFingerprintLibrary;
 using GriauleFingerprintLibrary.DataTypes;
 using System;
 using System.Collections.Generic;
@@ -48,24 +50,29 @@ namespace BioProject.Models
             GrImageFormat = GrCaptureImageFormat.GRCAP_IMAGE_FORMAT_BMP;
         }
 
-        public FingerprintRawImage GetRawImageFromByte(String fingerImage)
+        public FingerprintRawImage GetRawImageFromByte(FingerPrint fingerImage)
         {
-
-            byte[] fingerImageByte = Convert.FromBase64String(fingerImage);
+            System.Diagnostics.Debug.WriteLine("I am here 000");
+            string convertedGZip = Utils.DecompressToBase64FromDesktop(fingerImage.FingerImage);
+            byte[] fingerImageByte = Convert.FromBase64String(convertedGZip);
             // Create a managed array.
             byte[] managedArray = fingerImageByte;
-
+            System.Diagnostics.Debug.WriteLine("I am here AAA");
             FingerprintRawImage myRawImage = null;
             // Initialize unmanaged memory to hold the array.
             int size = Marshal.SizeOf(managedArray[0]) * managedArray.Length;
-
+            System.Diagnostics.Debug.WriteLine("I am here 111");
             IntPtr pnt = Marshal.AllocHGlobal(size);
 
             try
             {
                 // Copy the array to unmanaged memory.
                 Marshal.Copy(managedArray, 0, pnt, managedArray.Length);
-                myRawImage = new FingerprintRawImage(pnt, 250, 150, 500);
+                System.Diagnostics.Debug.WriteLine("I am here 222");
+                myRawImage = new FingerprintRawImage(pnt, fingerImage.Width, 
+                    fingerImage.Height, fingerImage.Resolution);
+
+                System.Diagnostics.Debug.WriteLine("I am here 333");
 
             }
             finally

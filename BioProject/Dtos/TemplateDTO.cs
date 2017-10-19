@@ -5,9 +5,10 @@ using System.Web;
 
 namespace BioProject.Dtos
 {
-    public class VerifyFingerDTO
+    public class TemplateDTO
     {
-        public string AnyFingerImage { get; set; }
+        public string LeftThumb { get; set; }
+        public string RightThumb { get; set; }
 
     }
 }

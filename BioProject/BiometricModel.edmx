@@ -28,9 +28,7 @@
           <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="studentId" Type="bigint" Nullable="false" />
           <Property Name="leftThumb" Type="longblob" Nullable="false" />
-          <Property Name="leftIndex" Type="longblob" Nullable="false" />
           <Property Name="rightThumb" Type="longblob" Nullable="false" />
-          <Property Name="rightIndex" Type="longblob" Nullable="false" />
         </EntityType>
         <EntityType Name="fingertemplate">
           <Key>
@@ -76,7 +74,7 @@
           <Property Name="mobile" Type="varchar" MaxLength="45" Nullable="false" />
           <Property Name="password" Type="varchar" MaxLength="255" />
           <Property Name="insertedDate" Type="datetime" Precision="0" Nullable="false" />
-          <Property Name="insertedBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="insertedBy" Type="varchar" MaxLength="50" />
           <Property Name="updatedDate" Type="datetime" Precision="0" />
           <Property Name="updatedBy" Type="varchar" MaxLength="50" />
           <Property Name="universityName" Type="varchar" MaxLength="100" Nullable="false" />
@@ -234,9 +232,7 @@
           <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="studentId" Type="Int64" Nullable="false" />
           <Property Name="leftThumb" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
-          <Property Name="leftIndex" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
           <Property Name="rightThumb" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
-          <Property Name="rightIndex" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
           <NavigationProperty Name="student" Relationship="Self.finger_student" FromRole="fingerprint" ToRole="student" />
         </EntityType>
         <EntityType Name="fingertemplate">
@@ -447,9 +443,7 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="studentId" ColumnName="studentId" />
                 <ScalarProperty Name="leftThumb" ColumnName="leftThumb" />
-                <ScalarProperty Name="leftIndex" ColumnName="leftIndex" />
                 <ScalarProperty Name="rightThumb" ColumnName="rightThumb" />
-                <ScalarProperty Name="rightIndex" ColumnName="rightIndex" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

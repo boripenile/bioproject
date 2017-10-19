@@ -19,5 +19,7 @@ namespace BioProject.Response
         public String PhoneNumber { get; set; }
 
         public bool Activated { get; set; }
+
+        public bool Super { get; set; }
     }
 }

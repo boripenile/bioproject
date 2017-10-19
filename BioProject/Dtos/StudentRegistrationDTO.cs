@@ -13,5 +13,7 @@ namespace BioProject.Dtos
 
         public string Picture { get; set; }
 
+        public TemplateDTO Template { get; set; }
+
     }
 }

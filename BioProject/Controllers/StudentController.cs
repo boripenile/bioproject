@@ -26,7 +26,7 @@ namespace BioProject.Controllers
             {
                 if (String.IsNullOrWhiteSpace(finger.AnyFingerImage)) return BadRequest("Image of index or thumb of either right or left finger is required.");
 
-                Int64 studentId = VerifyFingerPrint(finger.AnyFingerImage);
+                Int64 studentId = VerifyFingerPrint(finger);
 
                 if (studentId > 0)
                 {
@@ -162,16 +162,20 @@ namespace BioProject.Controllers
             {
                 if (UniversityHelper.isStudentDataValid(request.Biodata))
                 {
-
+                    System.Diagnostics.Debug.WriteLine("Started");
                     if (UniversityHelper.isFingerDataValid(request.Biometric) && !String.IsNullOrWhiteSpace(request.Picture))
                     {
+                        System.Diagnostics.Debug.WriteLine("Valid data");
                         var existDepartment = _context.departments.SingleOrDefault(m => m.id == request.Biodata.DepartmentId);
                         if (existDepartment == null) return BadRequest("Invalid department.");
+
+                        System.Diagnostics.Debug.WriteLine("Valid department.");
 
                         var existMatricByUniversityCode = _context.students.SingleOrDefault(m => m.matricNumber == request.Biodata.MatricNumber
                             && m.department.faculty.university.universityCode == existDepartment.faculty.university.universityCode);
                         if (existMatricByUniversityCode != null) return BadRequest("Duplicate Matric number is not allows");
 
+                        System.Diagnostics.Debug.WriteLine("Valid matric number.");
                         var newStudent = new student()
                         {
                             department = existDepartment,
@@ -180,29 +184,61 @@ namespace BioProject.Controllers
                             surname = request.Biodata.Surname,
                             otherName = request.Biodata.OtherName != null ? request.Biodata.OtherName : "",
                             matricNumber = request.Biodata.MatricNumber,
+                            insertedBy = request.Biodata.Email,
+                            insertedDate = DateTime.Now,
                             status = true
                         };
 
                         _context.students.Add(newStudent);
                         _context.SaveChanges();
+                        System.Diagnostics.Debug.WriteLine("Data saved.");
 
+                        
                         var newFingerPrints = new fingerprint()
                         {
                             student = newStudent,
-                            leftIndex = Convert.FromBase64String(request.Biometric.LeftIndex),
-                            leftThumb = Convert.FromBase64String(request.Biometric.LeftThumb),
-                            rightIndex = Convert.FromBase64String(request.Biometric.RightIndex),
-                            rightThumb = Convert.FromBase64String(request.Biometric.RightThumb)
+                            //leftIndex = Convert.FromBase64String(request.Biometric.LeftIndex),
+                            leftThumb = Convert.FromBase64String(request.Biometric.LeftThumb.FingerImage),
+                            //rightIndex = Convert.FromBase64String(request.Biometric.RightIndex),
+                            rightThumb = Convert.FromBase64String(request.Biometric.RightThumb.FingerImage)
                         };
 
                         _context.fingerprints.Add(newFingerPrints);
                         _context.SaveChanges();
 
-                        SaveFingerprintTemplate(request.Biometric.LeftIndex, newStudent);
-                        SaveFingerprintTemplate(request.Biometric.LeftThumb, newStudent);
-                        SaveFingerprintTemplate(request.Biometric.RightIndex, newStudent);
-                        SaveFingerprintTemplate(request.Biometric.RightThumb, newStudent);
+                        System.Diagnostics.Debug.WriteLine("Fingerprints saved.");
 
+                        
+
+                        if (request.Template.LeftThumb != null && request.Template.RightThumb != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine("Template 123");
+                            var temp1 = new fingertemplate()
+                                {
+                                    student = newStudent,
+                                    template = Convert.FromBase64String(request.Template.LeftThumb),
+                                    quality = 1
+                                };
+                                _context.fingertemplates.Add(temp1);
+                                _context.SaveChanges();
+                            var temp2 = new fingertemplate()
+                                {
+                                    student = newStudent,
+                                    template = Convert.FromBase64String(request.Template.RightThumb),
+                                    quality = 1
+                                };
+                                _context.fingertemplates.Add(temp2);
+                                _context.SaveChanges();
+                                System.Diagnostics.Debug.WriteLine("Template 234");
+                        }
+
+                        else
+                        {
+                            //SaveFingerprintTemplate(request.Biometric.LeftIndex, newStudent);
+                            SaveFingerprintTemplate(request.Biometric.LeftThumb, newStudent);
+                            //SaveFingerprintTemplate(request.Biometric.RightIndex, newStudent);
+                            SaveFingerprintTemplate(request.Biometric.RightThumb, newStudent);
+                        }
                         var newPicture = new picture()
                         {
                             image = Convert.FromBase64String(request.Picture),
@@ -212,14 +248,14 @@ namespace BioProject.Controllers
                         _context.pictures.Add(newPicture);
 
                         _context.SaveChanges();
-
+                        System.Diagnostics.Debug.WriteLine("Save record saved.");
                         return Ok(newStudent.matricNumber);
-                    }
-                    else
-                    {
-                        return BadRequest("Student biometric and picture are required");
-                    }
                 }
+                else
+                {
+                    return BadRequest("Student biometric and picture are required");
+                }
+            }
                 else
                 {
                     return BadRequest("Student biodata is required");
@@ -278,19 +314,26 @@ namespace BioProject.Controllers
                 return BadRequest("Something went wrong: " + e.Message);
             }
         }
-        private Int64 VerifyFingerPrint(string fingerPrint)
+        private Int64 VerifyFingerPrint(VerifyFingerDTO fingerPrint)
         {
             try
             {
                 var onlineTemplates = _context.fingertemplates.ToList();
+                if (onlineTemplates == null) return 0;
+                // FingerprintTemplate templateToVerify = ConvertFingerToTemplate(fingerPrint);
+                var templateToVerify = new fingertemplate()
+                {
+                    quality = 1,
+                    template = Convert.FromBase64String(fingerPrint.AnyFingerImage)
+                };
 
-                FingerprintTemplate templateToVerify = ConvertFingerToTemplate(fingerPrint);
+                var userTemplate = ConvertToTemplateFromDb(templateToVerify);
 
                 foreach (var template in onlineTemplates)
                 {
                     var dbTemplate = ConvertToTemplateFromDb(template);
                     int score = 0;
-                    if (Verify(dbTemplate, templateToVerify, out score))
+                    if (Verify(dbTemplate, userTemplate, out score))
                     {
                         return template.student.id;
                     }
@@ -298,6 +341,7 @@ namespace BioProject.Controllers
             }
             catch (Exception e)
             {
+                System.Diagnostics.Debug.WriteLine("Something went wrong: " + e.Message);
                 return 0;
             }
 
@@ -319,7 +363,7 @@ namespace BioProject.Controllers
             return _testTemplateT;
         }
 
-        private FingerprintTemplate ConvertFingerToTemplate(string finger)
+        private FingerprintTemplate ConvertFingerToTemplate(FingerPrint finger)
         {
             var imageRaw = FingerPrintHelper.Instance.GetRawImageFromByte(finger);
 
@@ -339,7 +383,7 @@ namespace BioProject.Controllers
                 : false;
         }
 
-        private string GetTemplateFromFingerString(string finger)
+        private string GetTemplateFromFingerString(FingerPrint finger)
         {
             var imageRaw = FingerPrintHelper.Instance.GetRawImageFromByte(finger);
 
@@ -350,22 +394,30 @@ namespace BioProject.Controllers
             return Convert.ToBase64String(_templ.Buffer);
         }
 
-        private void SaveFingerprintTemplate(string fingerPrint, student student)
+        private void SaveFingerprintTemplate(FingerPrint fingerPrint, student student)
         {
             var imageRaw = FingerPrintHelper.Instance.GetRawImageFromByte(fingerPrint);
 
             GriauleFingerprintLibrary.DataTypes.FingerprintTemplate _templ = null;
 
+            System.Diagnostics.Debug.WriteLine("Here 999");
+
             FingerPrintHelper.Instance.RefFingercore.Extract(imageRaw, ref _templ);
+
+            System.Diagnostics.Debug.WriteLine("Here 888");
+
+            System.Diagnostics.Debug.WriteLine("Template: " + Convert.ToBase64String(_templ.Buffer));
 
             var fTemplate = new fingertemplate()
             {
-                student = student,
+                student = student,//
                 template = _templ.Buffer,
                 quality = _templ.Quality
             };
 
             _context.fingertemplates.Add(fTemplate);
+            _context.SaveChanges();
+            System.Diagnostics.Debug.WriteLine("Fingerprint template 1 saved.");
         }
     }
 }

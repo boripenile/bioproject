@@ -7,13 +7,9 @@ namespace BioProject.Dtos
 {
     public class FingerPrintDTO
     {
-        public string LeftThumb { get; set; }
+        public FingerPrint LeftThumb { get; set; }
 
-        public string LeftIndex { get; set; }
-
-        public string RightThumb { get; set; }
-
-        public string RightIndex { get; set; }
+        public FingerPrint RightThumb { get; set; }
 
 
     }

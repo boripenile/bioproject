@@ -42,7 +42,6 @@ namespace BioProject.Helper
                 return null;
             }
 
-            return null;
 
         }
 
@@ -71,7 +70,6 @@ namespace BioProject.Helper
                 return null;
             }
 
-            return null;
 
         }
         public static string CompressByteToGzipBase64(byte[] input)
@@ -94,7 +92,6 @@ namespace BioProject.Helper
                 System.Diagnostics.Debug.WriteLine("Error occured: " + e.Message);
                 return null;
             }
-            return null;
         }
 
         public static string CompressBase64ToGzipBase64(String fromBase64Image)
@@ -120,7 +117,6 @@ namespace BioProject.Helper
                 System.Diagnostics.Debug.WriteLine("Error occured: " + e.Message);
                 return null;
             }
-            return null;
         }
 
 
